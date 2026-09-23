@@ -28,7 +28,9 @@ class JobTrackerApp:
     def _build(self):
         top=ttk.Frame(self.root,padding=18); top.pack(fill="x")
         ttk.Label(top,text="JOB APPLICATION TRACKER",style="Title.TLabel").pack(side="left")
-        ttk.Button(top,text="Export",command=self.export_menu).pack(side="right",padx=5)
+        ttk.Button(top,text="JSON Report",command=lambda:self.export_report("json")).pack(side="right",padx=3)
+        ttk.Button(top,text="PDF Report",command=lambda:self.export_report("pdf")).pack(side="right",padx=3)
+        ttk.Button(top,text="Export",command=self.export_menu).pack(side="right",padx=3)
         ttk.Button(top,text="Refresh",command=self.refresh).pack(side="right")
         self.notices=ttk.Label(self.root,padding=(18,0)); self.notices.pack(fill="x")
         self.nb=ttk.Notebook(self.root); self.nb.pack(fill="both",expand=True,padx=14,pady=12)
