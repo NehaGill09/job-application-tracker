@@ -154,15 +154,29 @@ class JobTrackerApp:
         if url: webbrowser.open(url if url.startswith(("http://","https://")) else "https://"+url)
 
     def export_menu(self):
-        choice=messagebox.askyesnocancel("Export","Yes = Excel\nNo = CSV\nCancel = stop")
+        choice=messagebox.askyesnocancel("Export",
+            "Yes = Excel\nNo = CSV\nCancel = stop")
         if choice is None: return
         ext=".xlsx" if choice else ".csv"
-        path=filedialog.asksaveasfilename(defaultextension=ext,filetypes=[("Excel","*.xlsx"),("CSV","*.csv")])
+        path=filedialog.asksaveasfilename(defaultextension=ext,
+            filetypes=[("Excel","*.xlsx"),("CSV","*.csv")])
         if not path: return
         try:
-            (export_excel if choice else export_csv)(self.db,path,self.vars["search"].get(),self.vars["filter"].get())
+            (export_excel if choice else export_csv)(
+                self.db,path,self.vars["search"].get(),self.vars["filter"].get())
             messagebox.showinfo("Export complete",f"Saved to:\n{path}")
         except Exception as e: messagebox.showerror("Export failed",str(e))
+
+    def export_report(self, kind):
+        defaults={"pdf":("PDF report","*.pdf"),"json":("JSON report","*.json")}
+        label,pattern=defaults[kind]
+        path=filedialog.asksaveasfilename(defaultextension=pattern[1:],filetypes=[(label,pattern)])
+        if not path: return
+        try:
+            (export_pdf if kind=="pdf" else export_json)(self.db,path)
+            messagebox.showinfo("Report complete",f"Saved to:\n{path}")
+        except Exception as e:
+            messagebox.showerror("Report failed",str(e))
 
     def run(self):
         self.root.protocol("WM_DELETE_WINDOW",self.close); self.root.mainloop()
